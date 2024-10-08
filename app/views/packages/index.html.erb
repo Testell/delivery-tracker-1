@@ -1,0 +1,94 @@
+<div>
+  <div>
+    <h1>
+      Delivery Tracker
+    </h1>
+    <p>
+      Know if something gets lost in the mail.
+    </p>
+  </div>
+</div>
+
+<hr>
+
+<div>
+  <div>
+    <h2>
+      Expecting a package?
+    </h2>
+
+    <form action="/insert_package" method="post">
+      <div>
+        <label for="description_box">
+          Description
+        </label>
+
+        <input type="text" id="description_box" name="query_description">
+      </div>
+
+      <div>
+        <label for="estimated_arrival_box">
+          Supposed to arrive on
+        </label>
+
+        <input type="date" id="estimated_arrival_box" name="query_estimated_arrival">
+      </div>
+
+      <div>
+        <label for="details_box">
+          Details
+        </label>
+
+        <textarea type="text" id="details_box" name="query_details">
+        </textarea>
+      </div>
+
+      <input type="hidden" name="query_user_id" value="<%= current_user.id %>">
+
+      <button>
+        Log delivery
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>
+
+<div class="waiting_on">
+  <h2>
+    Waiting on
+  </h2>
+  <% @list_of_packages.each do |a_package| %>
+    <% if a_package.recieved == false %>
+      <ul>
+        <form action="/mark_package_received/<%= a_package.id %>" method="post">
+          <li>
+            <p><%= a_package.description %></p>
+            <p>Supposed to arrive on <%= a_package.estimated_arrival %></p>
+            <p><%= a_package.details %></p>
+            <button>Mark as received</button>
+          </li>
+        </form>
+      </ul>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="received">
+  <h2>
+    Received
+  </h2>
+  <ul>
+    <% @list_of_packages.each do |a_package| %>
+      <% if a_package.recieved == true %>
+        <li>
+          <p><%= a_package.description %></p>
+          <p>
+            Updated <%= time_ago_in_words(a_package.updated_at) %> ago
+            <a href="/delete_package/<%= a_package.id%>">Delete</a>
+          </p>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
